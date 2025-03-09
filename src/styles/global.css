@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Ballet:opsz@16..72&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Doto:wght@100..900&family=Kode+Mono:wght@400..700&display=swap");
+@import "tailwindcss";
+
+@theme {
+	--font-kode: "Kode Mono", monospace;
+	--font-doto: "Doto", monospace;
+	--font-ballet: "Ballet", sans-serif;
+	--font-bodoni: "Bodoni Moda", serif;
+
+	--animate-gradient: gradient 8s linear infinite;
+	@keyframes gradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	--animate-shine: shine 5s linear infinite;
+	@keyframes shine {
+		0% {
+			background-position: 100%;
+		}
+		100% {
+			background-position: -100%;
+		}
+	}
+}
+
+:root {
+	@apply bg-zinc-900 text-zinc-100;
+}
+::-webkit-scrollbar {
+	@apply w-2 bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+	@apply rounded-xs bg-zinc-600;
+}
+::-webkit-scrollbar-thumb:hover {
+	@apply bg-zinc-400;
+}
