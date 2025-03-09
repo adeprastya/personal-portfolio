@@ -55,21 +55,21 @@ export default function CustomFrame({
 	};
 
 	return (
-		<div className="z-40 fixed w-full min-h-dvh">
+		<div className="pointer-events-none z-10 fixed w-full min-h-dvh">
 			{/* Top Frame */}
-			<div style={horizontalStyle} className={`absolute top-0 ${frameClassName}`}>
+			<div style={horizontalStyle} className={`pointer-events-auto absolute top-0 ${frameClassName}`}>
 				{topChild}
 			</div>
 			{/* Bottom Frame */}
-			<div style={horizontalStyle} className={`absolute bottom-0 ${frameClassName}`}>
+			<div style={horizontalStyle} className={`pointer-events-auto absolute bottom-0 ${frameClassName}`}>
 				{bottomChild}
 			</div>
 			{/* Left Frame */}
-			<div style={verticalStyle} className={`absolute left-0 ${frameClassName}`}>
+			<div style={verticalStyle} className={`pointer-events-auto absolute left-0 ${frameClassName}`}>
 				{leftChild}
 			</div>
 			{/* Right Frame */}
-			<div style={verticalStyle} className={`absolute right-0 ${frameClassName}`}>
+			<div style={verticalStyle} className={`pointer-events-auto absolute right-0 ${frameClassName}`}>
 				{rightChild}
 			</div>
 			{focusCrosshair && (
