@@ -9,7 +9,6 @@ interface CustomFrameProps {
 	frameClassName?: string;
 	children?: React.ReactNode;
 }
-
 export default function CustomFrame({
 	horizontalWide = NaN,
 	verticalWide = NaN,

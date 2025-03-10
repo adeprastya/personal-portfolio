@@ -1,10 +1,11 @@
 import type { MinProject } from "../../types/Project";
-import CustomFrame, { CustomFrameTop, CustomFrameBottom } from "../../components/CustomFrame";
+import CustomFrame, { CustomFrameTop, CustomFrameBottom, CustomFrameRight } from "../../components/CustomFrame";
 import MinProjectWrapper from "./MinProjectWrapper";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, useCallback } from "react";
 import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
 import { ReactLenis } from "lenis/react";
+import { useScroll } from "framer-motion";
 
 const fetchMinProjects = async () => {
 	const minProjects = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project")
@@ -37,10 +38,13 @@ export default function Home() {
 		});
 	}, []);
 
+	const { scrollYProgress } = useScroll();
+
 	return (
 		<>
 			<CustomFrame
 				wide={80}
+				verticalWide={60}
 				focusCrosshair
 				frameClassName="bg-white/4 backdrop-blur"
 				focusedCrosshair={isNaN(onViewProject)}
@@ -94,6 +98,17 @@ export default function Home() {
 						</button>
 					</div>
 				</CustomFrameBottom>
+				<CustomFrameRight>
+					<div className="size-full py-4 flex flex-col justify-end items-center gap-2">
+						<span
+							className="h-[14rem] px-2 border border-zinc-600 font-doto text-sm text-zinc-200 tracking-widest text-end"
+							style={{ writingMode: "vertical-rl" }}
+						>
+							{"/".repeat(Math.ceil(scrollYProgress.get() * 20) + 1)}
+						</span>
+						<span className="font-kode text-xs text-zinc-400">{Math.ceil(scrollYProgress.get() * 100)}%</span>
+					</div>
+				</CustomFrameRight>
 			</CustomFrame>
 
 			<ReactLenis root>
