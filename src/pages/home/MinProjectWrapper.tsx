@@ -4,6 +4,7 @@ import BlurText from "../../blocks/TextAnimations/BlurText/BlurText";
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useCustomCursor } from "../../contexts/useCustomCursor";
+import { HoveringProjectCursor } from "../../components/CustomCursor";
 
 interface MinProjectWrapperProps {
 	project: MinProject;
@@ -22,7 +23,7 @@ export default function MinProjectWrapper({ project, handleOnScreen }: MinProjec
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isInView]);
 
-	const cursorRef = useCustomCursor(() => <CustomCursor project={project} />, "-z-[1]");
+	const cursorRef = useCustomCursor(() => <HoveringProjectCursor project={project} />, "-z-[1]");
 
 	return (
 		<div
@@ -45,15 +46,5 @@ export default function MinProjectWrapper({ project, handleOnScreen }: MinProjec
 				</p>
 			</motion.section>
 		</div>
-	);
-}
-
-function CustomCursor({ project }: { project: MinProject }) {
-	return (
-		<img
-			src={project.image_thumbnail_url}
-			alt={project.title}
-			className="w-xs aspect-video object-cover object-center"
-		/>
 	);
 }

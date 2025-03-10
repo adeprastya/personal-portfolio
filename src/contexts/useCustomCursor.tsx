@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useRef, isValidElement } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { useMotionValue, motion, AnimatePresence, useSpring, MotionValue } from "framer-motion";
 import { debounce } from "../utils/rateLimiter";
 import { isMobile } from "../utils/deviceInfo";
@@ -9,13 +9,17 @@ type CustomCursorContextType = {
 	y: MotionValue<number>;
 	setCustomCursor: (cursor: CustomCursorType) => void;
 	setWrapperClassName: (className: string) => void;
+	resetCustomCursor: () => void;
 };
 const CustomCursorContext = createContext<CustomCursorContextType | null>(null);
 
 function CursorDefault() {
 	return <div className="size-28 sm:size-36 xl:size-44 rounded-full backdrop-invert" />;
 }
-export function CustomCursorProvider({ children }: { children: React.ReactNode }) {
+interface CustomCursorProviderProps extends React.PropsWithChildren {
+	DefaultCursor?: CustomCursorType;
+}
+export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }: CustomCursorProviderProps) {
 	const x = useMotionValue(0);
 	const y = useMotionValue(0);
 	const springX = useSpring(x, { damping: 10, stiffness: 50 });
@@ -44,17 +48,29 @@ export function CustomCursorProvider({ children }: { children: React.ReactNode }
 		return () => window.removeEventListener("mousemove", handleMouseMove);
 	}, []);
 
-	const [customCursor, setCustomCursor] = useState<CustomCursorType>(CursorDefault);
+	const [customCursor, setCustomCursor] = useState<CustomCursorType>(() => DefaultCursor);
 	const renderCustomCursor = useCallback(() => {
-		if (isValidElement(customCursor)) return React.createElement(customCursor);
-		else throw new Error("Invalid custom cursor");
+		if (typeof customCursor === "function") {
+			return React.createElement(customCursor);
+		} else if (React.isValidElement(customCursor)) {
+			return customCursor;
+		} else {
+			throw new Error("Invalid custom cursor");
+		}
 	}, [customCursor]);
 
 	const [wrapperClassName, setWrapperClassName] = useState<string>("");
 	const getWrapperClassName = useCallback(() => wrapperClassName, [wrapperClassName]);
 
+	const resetCustomCursor = useCallback(() => {
+		setCustomCursor(DefaultCursor);
+		setWrapperClassName("");
+	}, [DefaultCursor]);
+
 	return (
-		<CustomCursorContext.Provider value={{ x: springX, y: springY, setCustomCursor, setWrapperClassName }}>
+		<CustomCursorContext.Provider
+			value={{ x: springX, y: springY, setCustomCursor, setWrapperClassName, resetCustomCursor }}
+		>
 			{children}
 			{/* Custom Cursor */}
 			<AnimatePresence mode="wait">
@@ -99,7 +115,7 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 	const ref = useRef<T>(null);
 	const ctx = useContext(CustomCursorContext);
 	if (!ctx) throw new Error("useCustomCursor must be used within a CustomCursorProvider");
-	const { x, y, setCustomCursor, setWrapperClassName } = ctx;
+	const { x, y, setCustomCursor, setWrapperClassName, resetCustomCursor } = ctx;
 	const isInsideRef = useRef(false);
 
 	// Mouse enter/leave and scroll events
@@ -111,10 +127,7 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 			setCustomCursor(customCursor);
 			setWrapperClassName(wrapperClassName);
 		};
-		const handleMouseLeave = () => {
-			setCustomCursor(CursorDefault);
-			setWrapperClassName("");
-		};
+		const handleMouseLeave = () => resetCustomCursor();
 		const handleScroll = () => {
 			const rect = element.getBoundingClientRect();
 			const isInside = x.get() >= rect.left && x.get() <= rect.right && y.get() >= rect.top && y.get() <= rect.bottom;
@@ -138,7 +151,7 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 			element.removeEventListener("mouseenter", handleMouseEnter);
 			element.removeEventListener("mouseleave", handleMouseLeave);
 		};
-	}, [customCursor, setCustomCursor, wrapperClassName, setWrapperClassName, x, y]);
+	}, [customCursor, setCustomCursor, resetCustomCursor, wrapperClassName, setWrapperClassName, x, y]);
 
 	return ref;
 }
