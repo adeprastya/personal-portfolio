@@ -111,8 +111,8 @@ export default function Home() {
 				</CustomFrameRight>
 			</CustomFrame>
 
-			<ReactLenis root>
-				<main>
+			<ReactLenis root options={{ infinite: true, syncTouch: true, smoothWheel: true }}>
+				<main className="py-[100vh]">
 					{isLoading && <p>Loading...</p>}
 					{error && <p>Error: {error.message}</p>}
 					{data &&
