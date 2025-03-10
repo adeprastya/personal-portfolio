@@ -1,27 +1,20 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef, isValidElement } from "react";
-import { useMotionValue, motion, AnimatePresence, useSpring } from "framer-motion";
+import { useMotionValue, motion, AnimatePresence, useSpring, MotionValue } from "framer-motion";
+import { debounce } from "../utils/rateLimiter";
+import { isMobile } from "../utils/deviceInfo";
 
-const isMobile = (): boolean => {
-	if ("userAgentData" in navigator) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const navWithUAData = navigator as any;
-		if (typeof navWithUAData.userAgentData.mobile === "boolean") {
-			return navWithUAData.userAgentData.mobile;
-		}
-	}
-	return /Mobi|Android/i.test(navigator.userAgent);
-};
-
-function CursorDefault() {
-	return <div className="size-28 sm:size-36 xl:size-44 rounded-full backdrop-invert" />;
-}
 type CustomCursorType = React.FC;
 type CustomCursorContextType = {
+	x: MotionValue<number>;
+	y: MotionValue<number>;
 	setCustomCursor: (cursor: CustomCursorType) => void;
 	setWrapperClassName: (className: string) => void;
 };
 const CustomCursorContext = createContext<CustomCursorContextType | null>(null);
 
+function CursorDefault() {
+	return <div className="size-28 sm:size-36 xl:size-44 rounded-full backdrop-invert" />;
+}
 export function CustomCursorProvider({ children }: { children: React.ReactNode }) {
 	const x = useMotionValue(0);
 	const y = useMotionValue(0);
@@ -35,7 +28,8 @@ export function CustomCursorProvider({ children }: { children: React.ReactNode }
 		};
 		window.addEventListener("mousemove", handleMousePosition);
 		return () => window.removeEventListener("mousemove", handleMousePosition);
-	});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const [inWindow, setInWindow] = useState<boolean>(false);
 	// Update inWindow state
@@ -52,7 +46,7 @@ export function CustomCursorProvider({ children }: { children: React.ReactNode }
 
 	const [customCursor, setCustomCursor] = useState<CustomCursorType>(CursorDefault);
 	const renderCustomCursor = useCallback(() => {
-		if (isValidElement(customCursor)) return customCursor;
+		if (isValidElement(customCursor)) return React.createElement(customCursor);
 		else throw new Error("Invalid custom cursor");
 	}, [customCursor]);
 
@@ -60,7 +54,7 @@ export function CustomCursorProvider({ children }: { children: React.ReactNode }
 	const getWrapperClassName = useCallback(() => wrapperClassName, [wrapperClassName]);
 
 	return (
-		<CustomCursorContext.Provider value={{ setCustomCursor, setWrapperClassName }}>
+		<CustomCursorContext.Provider value={{ x: springX, y: springY, setCustomCursor, setWrapperClassName }}>
 			{children}
 			{/* Custom Cursor */}
 			<AnimatePresence mode="wait">
@@ -75,7 +69,7 @@ export function CustomCursorProvider({ children }: { children: React.ReactNode }
 					animate={inWindow ? "visible" : "hidden"}
 					exit="hidden"
 					transition={{ duration: 0.2, ease: "easeInOut" }}
-					className={"fixed top-0 left-0 pointer-events-none transform-gpu" + getWrapperClassName()}
+					className={`fixed top-0 left-0 pointer-events-none transform-gpu ${getWrapperClassName()}`}
 				>
 					{renderCustomCursor() as React.ReactElement}
 				</motion.div>
@@ -105,10 +99,10 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 	const ref = useRef<T>(null);
 	const ctx = useContext(CustomCursorContext);
 	if (!ctx) throw new Error("useCustomCursor must be used within a CustomCursorProvider");
-	const { setCustomCursor, setWrapperClassName } = ctx;
+	const { x, y, setCustomCursor, setWrapperClassName } = ctx;
+	const isInsideRef = useRef(false);
 
-	// TODO: Fix when on scroll and then cursor is not hovering over the element it is not updated
-	// Add mouseenter and mouseleave events
+	// Mouse enter/leave and scroll events
 	useEffect(() => {
 		const element = ref.current;
 		if (!element) return;
@@ -121,14 +115,30 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 			setCustomCursor(CursorDefault);
 			setWrapperClassName("");
 		};
+		const handleScroll = () => {
+			const rect = element.getBoundingClientRect();
+			const isInside = x.get() >= rect.left && x.get() <= rect.right && y.get() >= rect.top && y.get() <= rect.bottom;
 
+			if (isInside !== isInsideRef.current) {
+				if (isInside) {
+					handleMouseEnter();
+				} else {
+					handleMouseLeave();
+				}
+				isInsideRef.current = isInside;
+			}
+		};
+		const debouncedHandleScroll = debounce(handleScroll, 200);
+
+		window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
 		element.addEventListener("mouseenter", handleMouseEnter);
 		element.addEventListener("mouseleave", handleMouseLeave);
 		return () => {
+			window.removeEventListener("scroll", debouncedHandleScroll);
 			element.removeEventListener("mouseenter", handleMouseEnter);
 			element.removeEventListener("mouseleave", handleMouseLeave);
 		};
-	}, [customCursor, setCustomCursor, wrapperClassName, setWrapperClassName]);
+	}, [customCursor, setCustomCursor, wrapperClassName, setWrapperClassName, x, y]);
 
 	return ref;
 }
