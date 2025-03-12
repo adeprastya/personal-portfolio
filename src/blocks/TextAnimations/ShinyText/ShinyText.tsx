@@ -16,7 +16,7 @@ const ShinyText: React.FC<ShinyTextProps> = ({ text, disabled = false, speed = 5
 
 	return (
 		<div
-			className={`text-[rgba(255,215,0,0.8)] bg-clip-text inline-block ${disabled ? "" : "animate-shine"} ${className}`}
+			className={`text-gold bg-clip-text inline-block ${disabled ? "" : "animate-shine"} ${className}`}
 			style={{
 				backgroundImage:
 					"linear-gradient(120deg, oklch(0.985 0 0 / 0) 45%, oklch(0.985 0 0 / 1) 55%, oklch(0.985 0 0 / 0) 65%, oklch(0.985 0 0 / 0) 70%, oklch(0.985 0 0 / 1) 75%, oklch(0.985 0 0 / 0) 80%)",

@@ -101,22 +101,26 @@ function FocusCrosshair({ horizontalWide, verticalWide, wide, focusedCrosshair }
 		<div style={focusCrosshairStyle} className="pointer-events-none absolute">
 			<div
 				className={`absolute w-1/12 aspect-square border-t-2 border-l-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "top-12 left-12 border-zinc-300" : "top-4 left-4 border-[rgba(255,215,0,0.8)]"
+					focusedCrosshair ? "top-12 left-12 border-stone-500 dark:border-zinc-300" : "top-4 left-4 border-gold/75"
 				}`}
 			/>
 			<div
 				className={`absolute w-1/12 aspect-square border-t-2 border-r-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "top-12 right-14 border-zinc-300" : "top-4 right-6 border-[rgba(255,215,0,0.8)]"
+					focusedCrosshair ? "top-12 right-14 border-stone-500 dark:border-zinc-300" : "top-4 right-6 border-gold/75"
 				}`}
 			/>
 			<div
 				className={`absolute w-1/12 aspect-square border-b-2 border-l-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "bottom-12 left-12 border-zinc-300" : "bottom-4 left-4 border-[rgba(255,215,0,0.8)]"
+					focusedCrosshair
+						? "bottom-12 left-12 border-stone-500 dark:border-zinc-300"
+						: "bottom-4 left-4 border-gold/75"
 				}`}
 			/>
 			<div
 				className={`absolute w-1/12 aspect-square border-b-2 border-r-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "bottom-12 right-14 border-zinc-300" : "bottom-4 right-6 border-[rgba(255,215,0,0.8)]"
+					focusedCrosshair
+						? "bottom-12 right-14 border-stone-500 dark:border-zinc-300"
+						: "bottom-4 right-6 border-gold/75"
 				}`}
 			/>
 		</div>

@@ -2,10 +2,10 @@ import { MinProject } from "../types/Project";
 
 export function CursorDefault() {
 	const className =
-		"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(6vw+3vh+50px)] aspect-square rounded-full border-t border-[rgba(255,215,0,0.3)] animate-spin";
+		"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(6vw+3vh+50px)] aspect-square rounded-full border-t border-gold/60 animate-spin";
 
 	return (
-		<div className="relative w-[calc(6vw+3vh+50px)] aspect-square rounded-full drop-shadow-cursor">
+		<div className="relative w-[calc(6vw+3vh+50px)] aspect-square rounded-full">
 			<div className={className} style={{ animationDuration: "2s" }} />
 			<div className={className} style={{ animationDuration: "2.5s", animationDirection: "reverse" }} />
 			<div className={className} style={{ animationDuration: "3s" }} />
@@ -32,7 +32,7 @@ export function HoveringProjectCursor({ project }: { project: MinProject }) {
 			<img
 				src={project.image_thumbnail_url}
 				alt={project.title}
-				className="w-[calc(7vw+4vh+150px)] aspect-video object-cover object-center brightness-60 bg-black"
+				className="w-[calc(7vw+4vh+150px)] aspect-video object-cover object-center brightness-90 dark:brightness-80 bg-neutral-500"
 			/>
 		</div>
 	);

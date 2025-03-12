@@ -41,7 +41,7 @@ export default function MinProjectWrapper({ project, handleOnScreen }: MinProjec
 				<motion.h3 className="font-ballet text-[10rem] leading-none drop-shadow-custom">
 					<ShinyText text={project.title} speed={4} />
 				</motion.h3>
-				<p className="font-bodoni text-[2rem] leading-tight text-stone-300 drop-shadow-custom">
+				<p className="font-bodoni text-[2rem] leading-tight font-semibold dark:font-normal text-stone-600 dark:text-stone-300 drop-shadow-custom">
 					<BlurText text={project.tagline} delay={150} />
 				</p>
 			</motion.section>
