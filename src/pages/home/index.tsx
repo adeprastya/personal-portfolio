@@ -1,4 +1,5 @@
 import type { MinProject } from "../../types/Project";
+import PreloadPage from "../../components/PreloadPage";
 import CustomFrame, { CustomFrameTop, CustomFrameBottom, CustomFrameRight } from "../../components/CustomFrame";
 import MinProjectWrapper from "./MinProjectWrapper";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +18,7 @@ const fetchMinProjects = async () => {
 };
 
 export default function Home() {
-	const { data, isLoading, error } = useQuery({
+	const { data, isLoading } = useQuery({
 		queryKey: ["minProjects"],
 		queryFn: fetchMinProjects
 	});
@@ -46,6 +47,8 @@ export default function Home() {
 
 	return (
 		<>
+			<PreloadPage deps={[!isLoading]} />
+
 			<CustomFrame
 				wide={80}
 				verticalWide={60}
@@ -128,9 +131,7 @@ export default function Home() {
 			</CustomFrame>
 
 			<ReactLenis root options={{ infinite: true, syncTouch: true, smoothWheel: true }}>
-				<main>
-					{isLoading && <p>Loading...</p>}
-					{error && <p>Error: {error.message}</p>}
+				<main className="px-28">
 					{data &&
 						data.map((project: MinProject, i: number) => (
 							<MinProjectWrapper
