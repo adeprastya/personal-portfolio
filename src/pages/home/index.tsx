@@ -8,6 +8,7 @@ import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedTe
 import { ReactLenis } from "lenis/react";
 import { useScroll } from "framer-motion";
 import useTheme from "../../hooks/useTheme";
+import { useNavigate } from "react-router";
 
 const fetchMinProjects = async () => {
 	const minProjects = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project")
@@ -28,7 +29,7 @@ export default function Home() {
 
 	const [onViewProject, setOnViewProject] = useState<number>(NaN);
 	const [onScreen, setOnScreen] = useState<boolean[]>(() => (data ? Array(data.length).fill(false) : []));
-	// Get project that on view
+	// Getting project that on view
 	useEffect(() => {
 		if (onScreen.some((e) => e === true)) {
 			setOnViewProject(onScreen.indexOf(true as never) as number);
@@ -44,6 +45,7 @@ export default function Home() {
 		});
 	}, []);
 
+	// Getting screen breakpoint
 	const [screenBreakpoint, setScreenBreakpoint] = useState("xl");
 	useEffect(() => {
 		const handleResize = () => {
@@ -94,6 +96,10 @@ export default function Home() {
 				return 35;
 		}
 	};
+
+	// Navigation
+	const navigate = useNavigate();
+	const handleNavigate = () => navigate("/project/" + data?.[onViewProject].id);
 
 	return (
 		<>
@@ -150,6 +156,7 @@ export default function Home() {
 						</span>
 						<button
 							type="button"
+							onClick={handleNavigate}
 							disabled={isNaN(onViewProject)}
 							className="border border-stone-400 dark:border-zinc-500 font-doto font-semibold dark:font-normal text-sm sm:text-base lg:text-lg text-center hover:bg-stone-400 dark:hover:bg-zinc-500 active:bg-stone-600 dark:active:bg-zinc-700 focus:outline-2 focus:outline-offset-2 focus:outline-stone-700 dark:focus:outline-zinc-300 transition-colors duration-500 ease-initial cursor-pointer disabled:hover:bg-transparent disabled:active:bg-transparent disabled:focus:outline-none disabled:cursor-default disabled:opacity-30"
 						>

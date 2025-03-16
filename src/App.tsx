@@ -1,7 +1,8 @@
 import "./styles/global.css";
-import Home from "./pages/home";
 import ContextProvider from "./contexts/ContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router";
+import { router } from "./routes";
 
 const queryClient = new QueryClient();
 
@@ -9,7 +10,7 @@ export default function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ContextProvider>
-				<Home />
+				<RouterProvider router={router} />
 			</ContextProvider>
 		</QueryClientProvider>
 	);
