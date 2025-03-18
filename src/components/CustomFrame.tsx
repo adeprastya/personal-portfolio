@@ -22,6 +22,7 @@ export default function CustomFrame({
 	let bottomChild: React.ReactNode;
 	let leftChild: React.ReactNode;
 	let rightChild: React.ReactNode;
+	let nodeChild: React.ReactNode;
 
 	React.Children.forEach(children, (child) => {
 		if (!React.isValidElement(child)) return;
@@ -39,6 +40,7 @@ export default function CustomFrame({
 				rightChild = child;
 				break;
 			default:
+				nodeChild = child;
 				break;
 		}
 	});
@@ -51,6 +53,12 @@ export default function CustomFrame({
 		width: `${verticalWide || wide}px`,
 		height: `calc(100dvh - ${(horizontalWide || wide) * 2}px)`,
 		top: `${horizontalWide || wide}px`
+	};
+	const childStyle = {
+		top: `${horizontalWide || wide}px`,
+		left: `${verticalWide || wide}px`,
+		bottom: `${horizontalWide || wide}px`,
+		right: `${verticalWide || wide}px`
 	};
 
 	return (
@@ -79,6 +87,9 @@ export default function CustomFrame({
 					focusedCrosshair={focusedCrosshair}
 				/>
 			)}
+			<div style={childStyle} className="absolute">
+				{nodeChild}
+			</div>
 		</div>
 	);
 }
