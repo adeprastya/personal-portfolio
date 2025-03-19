@@ -1,8 +1,8 @@
 import type { Project } from "../../types/Project";
-import CustomFrame, { CustomFrameBottom, CustomFrameTop } from "../../components/CustomFrame";
-import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
+import useTheme from "../../hooks/useTheme";
+import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
 import BlurText from "../../blocks/TextAnimations/BlurText/BlurText";
 
 const fetchProject = async (id: string): Promise<Project> => {
@@ -13,6 +13,7 @@ const fetchProject = async (id: string): Promise<Project> => {
 };
 
 export default function Project() {
+	useTheme();
 	const { projectId } = useParams();
 
 	const { data } = useQuery({
@@ -24,118 +25,107 @@ export default function Project() {
 	const handleBackClick = () => navigate("/");
 
 	return (
-		<main>
-			{data && (
-				<CustomFrame wide={60} frameClassName="bg-black/6 dark:bg-white/6 backdrop-blur">
-					<div className="relative size-full grid grid-cols-2 grid-rows-2">
-						{/* Corner / inset round */}
-						<div className="absolute top-0 right-0 size-14 before:rounded-tr-4xl bg-black/6 dark:bg-white/6 before:absolute before:top-0 before:left-0 before:size-full before:backdrop-blur before:bg-stone-200" />
-						<div className="absolute bottom-0 right-0 size-14 before:rounded-br-4xl bg-black/6 dark:bg-white/6 before:absolute before:top-0 before:left-0 before:size-full before:backdrop-blur before:bg-stone-200" />
-						<div className="absolute bottom-0 left-0 size-14 before:rounded-bl-4xl bg-black/6 dark:bg-white/6 before:absolute before:top-0 before:left-0 before:size-full before:backdrop-blur before:bg-stone-200" />
-						{/* /// */}
+		<main className="overflow-hidden relative w-full min-h-dvh grid gap-4 auto-rows-auto grid-cols-2">
+			{/* Negative Corners */}
+			<div className="absolute top-12 right-12 size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:dark:bg-zinc-800 after:rounded-tr-3xl" />
+			{/* Top Frame */}
+			<div className="absolute top-0 left-0 w-full h-12 bg-stone-300 dark:bg-zinc-800" />
+			{/* Side Frame */}
+			<div className="absolute top-0 left-0 h-full w-4 sm:w-8 lg:w-12 bg-stone-300 dark:bg-zinc-800" />
+			<div className="absolute top-0 right-0 h-full w-4 sm:w-8 lg:w-12 bg-stone-300 dark:bg-zinc-800" />
 
-						{/* Title & tagline */}
-						<div className="relative h-fit px-12 pb-6 bg-black/6 dark:bg-white/6 backdrop-blur rounded-br-4xl flex flex-col justify-center">
-							<h1 className="mb-4 font-doto font-semibold text-[5rem] leading-none">
-								<DecryptedText text={data?.title || ""} animateOn="view" speed={70} sequential />
-							</h1>
+			{/* Title & Tagline */}
+			<div className="relative col-span-full lg:col-span-1 h-full py-6 px-6 sm:px-12 lg:px-18 lg:rounded-br-3xl bg-stone-300 dark:bg-zinc-800 flex flex-col justify-center">
+				{/* Negative Corners */}
+				<div className="absolute bottom-0 left-4 sm:left-8 lg:left-12 translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:dark:bg-zinc-800 after:rounded-tl-3xl" />
+				<div className="absolute bottom-0 right-4 sm:right-8 translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-tr-3xl lg:hidden" />
+				<div className="absolute top-8 lg:top-12 right-0 translate-x-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-tl-3xl" />
 
-							<p className="font-doto font-bold text-[2rem] leading-tight">
-								<DecryptedText text={data?.tagline || ""} animateOn="view" speed={40} sequential />
-							</p>
+				<h1 className="mb-4 font-doto font-bold text-[2.7rem] sm:text-[3.5rem] lg:text-[4.5rem] leading-none">
+					{data?.title}
+				</h1>
+				<p className="font-doto font-bold text-[1.4rem] sm:text-[1.8rem] lg:text-[2.2rem] leading-tight">
+					{data?.tagline}
+				</p>
+			</div>
 
-							<div className="absolute top-0 right-0 translate-x-full size-14 before:rounded-tl-4xl bg-black/6 dark:bg-white/6 before:absolute before:top-0 before:left-0 before:size-full before:backdrop-blur before:bg-stone-200" />
-
-							<div className="absolute bottom-0 left-0 translate-y-full size-14 before:rounded-tl-4xl bg-black/6 dark:bg-white/6 before:absolute before:top-0 before:left-0 before:size-full before:backdrop-blur before:bg-stone-200" />
-						</div>
-
-						<div className="row-span-2 px-16 py-8 flex flex-col gap-4 justify-around">
-							{/* Description */}
-							<p className="tracking-wide text-stone-800">
-								<BlurText text={data?.description} delay={10} />
-							</p>
-
-							{/* Images */}
-							<div className="flex justify-evenly items-center">
-								{data?.image_thumbnail_url && (
-									<img
-										src={data?.image_thumbnail_url}
-										alt="Project Thumbnail"
-										className="size-20 rounded-full border border-gold shadow-md object-cover object-center"
-									/>
-								)}
-
-								<div className="grid grid-cols-3 gap-4">
-									{Array.isArray(data?.image_preview_urls) &&
-										data?.image_preview_urls.map((url, i) => (
-											<img
-												key={i}
-												src={url}
-												alt={`Preview ${i + 1}`}
-												className="size-12 rounded-full border border-gold shadow-md object-cover object-center"
-											/>
-										))}
-								</div>
-							</div>
-						</div>
-
-						{/* Technologies */}
-						<div className="p-16 flex justify-center items-center">
-							<div className="flex flex-wrap gap-4 items-center">
-								{Array.isArray(data?.technologies) &&
-									data?.technologies.map((tech, i) => (
-										<p
-											key={i}
-											className="px-4 py-1 rounded-full bg-stone-100 shadow-md text-sm tracking-wide text-stone-800"
-										>
-											<BlurText text={tech} />
-										</p>
-									))}
-							</div>
-						</div>
-					</div>
-
-					{/* Top */}
-					<CustomFrameTop>
-						<div className="p-4">
-							<button
-								onClick={handleBackClick}
-								type="button"
-								className="border border-stone-400 dark:border-zinc-500 font-doto font-semibold dark:font-normal text-sm sm:text-base lg:text-lg text-center hover:bg-stone-400 dark:hover:bg-zinc-500 active:bg-stone-600 dark:active:bg-zinc-700 focus:outline-2 focus:outline-offset-2 focus:outline-stone-700 dark:focus:outline-zinc-300 transition-colors duration-500 ease-initial cursor-pointer disabled:hover:bg-transparent disabled:active:bg-transparent disabled:focus:outline-none disabled:cursor-default disabled:opacity-30"
+			{/* Technologies */}
+			<div className="col-span-full lg:col-span-1 py-6 px-6 sm:px-12 lg:px-18 flex justify-center items-center tracking-wide text-xs sm:text-sm">
+				<div className="flex gap-3 lg:gap-5 flex-wrap">
+					{data?.technologies &&
+						data.technologies.map((tech, index) => (
+							<p
+								key={index}
+								className="px-3 py-1 sm:px-5 rounded-full bg-stone-50 dark:bg-zinc-800 shadow-md text-stone-700 dark:text-zinc-100"
 							>
-								<DecryptedText text={"<- Back"} sequential parentClassName="px-3 py-1" />
-							</button>
-						</div>
-					</CustomFrameTop>
-
-					{/* Bottom */}
-					<CustomFrameBottom>
-						<div className="px-8 size-full flex gap-2 justify-between items-center">
-							<p className="font-doto font-semibold">
-								<DecryptedText text={data?.created_at || ""} animateOn="view" speed={100} sequential />
+								{tech}
 							</p>
+						))}
+				</div>
+			</div>
 
-							<div className="flex gap-6 font-doto font-semibold tracking-tight">
-								{data?.site_url && (
-									<a href={data.site_url} className="px-2 border-b-2 border-t-2 border-neutral-500/80">
-										<DecryptedText text="Live Site //" animateOn="hover" speed={70} sequential />
-									</a>
-								)}
-								{data?.source_code_url && (
-									<a href={data.source_code_url} className="px-2 border-b-2 border-t-2 border-neutral-500/80">
-										<DecryptedText text="Source Code //" animateOn="hover" speed={70} sequential />
-									</a>
-								)}
-								{data?.demo_url && (
-									<a href={data.demo_url} className="px-2 border-b-2 border-t-2 border-neutral-500/80">
-										<DecryptedText text="Demo Video //" animateOn="hover" speed={70} sequential />
-									</a>
-								)}
-							</div>
-						</div>
-					</CustomFrameBottom>
-				</CustomFrame>
-			)}
+			{/* Description & Images */}
+			<div className="col-span-full h-full py-6 px-6 sm:px-12 lg:px-24 flex gap-12 flex-col lg:flex-row-reverse justify-between">
+				<p className="basis-1/2 tracking-wide text-sm sm:text-base text-stone-600 dark:text-zinc-400 text-justify">
+					{data?.description}
+				</p>
+
+				<div className="basis-1/2 flex gap-2 sm:gap-4 lg:gap-8 flex-wrap justify-evenly items-center">
+					<img
+						src={data?.image_thumbnail_url}
+						alt={data?.title}
+						className="size-14 sm:size-18 lg:size-24 rounded-full border border-gold shadow-md object-cover object-center"
+					/>
+
+					<div className="grid gap-2 sm:gap-4 grid-cols-3">
+						{data?.image_preview_urls &&
+							data.image_preview_urls.map((url, index) => (
+								<img
+									key={index}
+									src={url}
+									alt={data.title}
+									className="size-10 sm:size-13 lg:size-16 rounded-full border border-gold shadow-md object-cover object-center"
+								/>
+							))}
+					</div>
+				</div>
+			</div>
+
+			{/* Created At & Links */}
+			<div className="col-span-full relative h-full py-6 px-6 sm:px-12 bg-stone-300 dark:bg-zinc-800 flex gap-4 flex-wrap items-center justify-between">
+				{/* Negative Corners */}
+				<div className="absolute top-0 left-4 sm:left-8 lg:left-12 -translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:dark:bg-zinc-800 after:rounded-bl-3xl" />
+				<div className="absolute top-0 right-4 sm:right-8 lg:right-12 -translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-br-3xl" />
+
+				<p className="font-doto font-bold text-xs sm:text-sm lg:text-base">{data?.created_at}</p>
+
+				<div className="flex gap-x-4 gap-y-2 flex-wrap">
+					{data?.site_url && (
+						<a
+							href={data.site_url}
+							className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-100"
+						>
+							Live Site //
+						</a>
+					)}
+					{data?.source_code_url && (
+						<a
+							href={data.source_code_url}
+							className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-100"
+						>
+							Source Code //
+						</a>
+					)}
+					{data?.demo_url && (
+						<a
+							href={data.demo_url}
+							className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-100"
+						>
+							Demo Video //
+						</a>
+					)}
+				</div>
+			</div>
 		</main>
 	);
 }
