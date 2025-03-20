@@ -1,10 +1,12 @@
 import type { Project } from "../../types/Project";
-import { useNavigate, useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import useTheme from "../../hooks/useTheme";
 import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
 import BlurText from "../../blocks/TextAnimations/BlurText/BlurText";
+import { Modal } from "../../components/Modal";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import useTheme from "../../hooks/useTheme";
 
 const fetchProject = async (id: string): Promise<Project> => {
 	const data = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project/" + id)
@@ -24,6 +26,8 @@ export default function Project() {
 
 	const navigate = useNavigate();
 	const handleNavigate = () => navigate("/");
+
+	const [activeModal, setActiveModal] = useState("");
 
 	return (
 		<>
@@ -92,10 +96,11 @@ export default function Project() {
 							<motion.img
 								src={data?.image_thumbnail_url}
 								alt={data?.title}
-								className="size-14 sm:size-18 lg:size-24 rounded-full border border-gold shadow-md object-cover object-center"
+								className="size-14 sm:size-18 lg:size-24 rounded-full border border-gold shadow-md object-cover object-center cursor-pointer"
 								variants={vars}
 								initial="hidden"
 								animate="visible"
+								onClick={() => setActiveModal(data?.image_thumbnail_url || "")}
 							/>
 
 							<div className="grid gap-2 sm:gap-4 grid-cols-3">
@@ -105,11 +110,12 @@ export default function Project() {
 											key={index}
 											src={url}
 											alt={data.title}
-											className="size-10 sm:size-13 lg:size-16 rounded-full border border-gold shadow-md object-cover object-center"
+											className="size-10 sm:size-13 lg:size-16 rounded-full border border-gold shadow-md object-cover object-center cursor-pointer"
 											custom={index}
 											variants={vars}
 											initial="hidden"
 											animate="visible"
+											onClick={() => setActiveModal(url)}
 										/>
 									))}
 							</div>
@@ -122,37 +128,45 @@ export default function Project() {
 						<div className="absolute top-0 left-4 sm:left-8 lg:left-12 -translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:dark:bg-zinc-800 after:rounded-bl-3xl" />
 						<div className="absolute top-0 right-4 sm:right-8 lg:right-12 -translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-br-3xl" />
 
-						<p className="font-doto font-bold text-xs sm:text-sm lg:text-base">
+						<p className="font-doto font-bold text-xs sm:text-sm lg:text-base text-stone-700 dark:text-zinc-300">
 							<DecryptedText text={data?.created_at || ""} animateOn="view" sequential speed={80} />
 						</p>
 
 						<div className="flex gap-x-4 gap-y-2 flex-wrap">
 							{data?.site_url && (
 								<a
+									target="_blank"
 									href={data.site_url}
-									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-gold"
+									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-200"
 								>
 									<DecryptedText text="Live Site //" animateOn="hover" sequential />
 								</a>
 							)}
 							{data?.source_code_url && (
 								<a
+									target="_blank"
 									href={data.source_code_url}
-									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-gold"
+									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-200"
 								>
 									<DecryptedText text="Source Code //" animateOn="hover" sequential />
 								</a>
 							)}
 							{data?.demo_url && (
 								<a
+									target="_blank"
 									href={data.demo_url}
-									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-gold"
+									className="border-t border-b border-stone-500 font-doto font-bold text-sm sm:text-base lg:text-lg text-stone-900 dark:text-zinc-200"
 								>
 									<DecryptedText text="Demo Video //" animateOn="hover" sequential />
 								</a>
 							)}
 						</div>
 					</div>
+
+					{/* Fullscreen Image */}
+					<Modal show={activeModal !== ""} closeHandler={() => setActiveModal("")}>
+						<img src={activeModal} alt="Fullscreen Image" className="size-full object-contain" />
+					</Modal>
 				</main>
 			)}
 		</>
