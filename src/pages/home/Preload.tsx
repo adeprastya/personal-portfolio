@@ -1,22 +1,18 @@
 import CustomPreload from "../../components/CustomPreload";
 import AlwaysDecryptedText from "../../blocks/TextAnimations/DecryptedText/AlwaysDecryptedText";
-import useTheme from "../../hooks/useTheme";
 import { motion } from "framer-motion";
 
 export default function Preload({ deps }: { deps: boolean[] }) {
-	const { theme } = useTheme();
 	const vars = {
 		initial: {
-			backgroundColor: theme === "light" ? "#e7e5e4" : "#18181b",
 			backdropFilter: "blur(10px)"
 		},
 		animate: {
-			backgroundColor: theme === "light" ? "#e7e5e4" : "#18181b",
 			backdropFilter: "blur(10px)"
 		},
 		exit: {
-			backgroundColor: "#0000001a",
-			backdropFilter: "blur(0px)"
+			backdropFilter: "blur(0px)",
+			transition: { delay: 0.8, duration: 0.8, ease: "easeIn" }
 		}
 	};
 
@@ -28,17 +24,34 @@ export default function Preload({ deps }: { deps: boolean[] }) {
 }
 
 function LoadingPage({ loadedPercentage }: { loadedPercentage: number }) {
+	const vars = {
+		initial: {
+			height: "100dvh"
+		},
+		animate: {
+			height: "100dvh"
+		},
+		exit: {
+			height: "0",
+			transition: { delay: 0.2, duration: 0.8, ease: "easeOut" }
+		}
+	};
+
 	return (
 		<motion.div
-			initial={{ opacity: 1 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.3, ease: "easeInOut" }}
-			className="font-doto text-[8rem] leading-none text-gold flex flex-col"
+			variants={vars}
+			initial="initial"
+			animate="animate"
+			exit="exit"
+			className="bg-stone-200 dark:bg-zinc-900 overflow-hidden"
 		>
-			<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 33} text="POR" />
-			<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 66} text="TFO" />
-			<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 99} text="LIO" />
+			<div className="w-screen h-screen flex items-center justify-center">
+				<div className="font-doto font-bold text-7xl  text-gold flex flex-col">
+					<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 33} text="POR" />
+					<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 66} text="TFO" />
+					<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 99} text="LIO" />
+				</div>
+			</div>
 		</motion.div>
 	);
 }

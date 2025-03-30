@@ -23,6 +23,7 @@ interface CustomPreloadProps {
 		| ((props: { loadedPercentage: number }) => React.ReactNode);
 	deps: boolean[];
 	variants?: Variants;
+	className?: string;
 }
 /**
  * @param deps
@@ -32,10 +33,15 @@ interface CustomPreloadProps {
  *
  * @example
  * <CustomPreload deps={[loading, loading]} variants={vars}>
- *   <>{({ loadedPercentage }: { loadedPercentage: number }) => <LoadingPage loadedPercentage={loadedPercentage} />}</>
+ *   {({ loadedPercentage }: { loadedPercentage: number }) => <LoadingPage loadedPercentage={loadedPercentage} />}
  * </CustomPreload>
  */
-export default function CustomPreload({ children, deps, variants = defaultVars }: CustomPreloadProps) {
+export default function CustomPreload({
+	children,
+	deps,
+	variants = defaultVars,
+	className = "fixed top-0 left-0 w-full h-full z-[999]"
+}: CustomPreloadProps) {
 	const [fontsLoaded, setFontsLoaded] = useState(false);
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 	const imagesRef = useRef<HTMLImageElement[]>([]);
@@ -107,7 +113,7 @@ export default function CustomPreload({ children, deps, variants = defaultVars }
 
 	return (
 		<AnimatePresence>
-			{loadedPercentage <= 99 && (
+			{loadedPercentage !== 100 && (
 				<motion.div
 					key="preloader"
 					variants={variants}
@@ -119,7 +125,7 @@ export default function CustomPreload({ children, deps, variants = defaultVars }
 						duration: 0.3,
 						ease: "easeInOut"
 					}}
-					className="fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center"
+					className={className}
 				>
 					{typeof children === "function"
 						? children({ loadedPercentage })
