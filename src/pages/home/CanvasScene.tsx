@@ -12,8 +12,8 @@ interface TextObjectProps {
 function TextObject({ project, index, handleVisible }: TextObjectProps) {
 	const { height, width } = useThree((state) => state.viewport);
 
-	const maxTextWidth = width * 0.7;
-	const textSize = Math.min(1.8, maxTextWidth / 7);
+	const maxTextWidth = width * 1;
+	const textSize = Math.min(1.5, maxTextWidth / 6);
 
 	// update visible index
 	const ref = useIntersect((visible) => {
@@ -25,11 +25,12 @@ function TextObject({ project, index, handleVisible }: TextObjectProps) {
 	});
 
 	return (
-		<Center key={project.id} position={[0, -index * height * 2, 0]}>
+		<Center key={project.id} position={[0, -index * (height * 0.6 + width * 0.6), 0]}>
 			<Text3D
 				scale={textSize}
 				size={1}
 				font={"/fonts/Ballet 60pt_Regular.json"}
+				lineHeight={0.5}
 				height={0.02}
 				curveSegments={10}
 				bevelEnabled={true}
@@ -46,9 +47,7 @@ function TextObject({ project, index, handleVisible }: TextObjectProps) {
 					emissiveIntensity={0.05}
 				/>
 
-				{/* TODO: CREATE DOT OBJECT, AND CHANGE INTERSECT REF TO IT. FOR BETTER INTERSECTION */}
-
-				{project.title}
+				{project.title.split(" ").join("\n")}
 			</Text3D>
 		</Center>
 	);
@@ -61,12 +60,12 @@ interface ProjectsTextObjectProps {
 function ProjectsTextObject({ projects, handleVisible }: ProjectsTextObjectProps) {
 	const groupRef = useRef<THREE.Group>(null!);
 	const scroll = useScroll();
-	const { height } = useThree((state) => state.viewport);
+	const { height, width } = useThree((state) => state.viewport);
 
 	// Update text position based on scroll
 	useFrame(() => {
 		if (groupRef.current) {
-			groupRef.current.position.y = scroll.offset * height * 2 * (projects.length - 1);
+			groupRef.current.position.y = scroll.offset * (height * 0.6 + width * 0.6) * (projects.length - 1);
 		}
 	});
 
@@ -89,7 +88,7 @@ export default function CanvasScene({ projects, handleVisible }: CanvasSceneProp
 			<ambientLight intensity={0.5} />
 			<Environment preset="warehouse" />
 
-			<ScrollControls pages={projects.length * 2} damping={0.15}>
+			<ScrollControls pages={projects.length} damping={0.3}>
 				<ProjectsTextObject projects={projects} handleVisible={handleVisible} />
 			</ScrollControls>
 		</Canvas>

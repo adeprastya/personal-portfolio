@@ -4,12 +4,9 @@ import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedTe
 import useTheme from "../../hooks/useTheme";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useScroll } from "framer-motion";
 
 export default function Frame({ project, onViewProject }: { project: Project[]; onViewProject: number }) {
 	const { theme, toggleTheme } = useTheme();
-
-	const { scrollYProgress } = useScroll();
 
 	// Update frame width
 	const [screenBreakpoint, setScreenBreakpoint] = useState("xl");
@@ -138,18 +135,6 @@ export default function Frame({ project, onViewProject }: { project: Project[]; 
 					>
 						{theme === "light" ? "L" : "D"}
 					</button>
-
-					<div className="flex flex-col items-center gap-2">
-						<span
-							className="min-h-[14rem] w-fit px-2 border border-stone-400 dark:border-zinc-600 font-doto text-xs lg:text-sm font-bold dark:font-normal text-stone-800 dark:text-zinc-200 tracking-widest text-end"
-							style={{ writingMode: "vertical-rl" }}
-						>
-							{"/".repeat(Math.ceil(scrollYProgress.get() * 20) + 1)}
-						</span>
-						<span className="font-kode text-[10px] lg:text-xs text-stone-500 dark:text-zinc-400">
-							{Math.ceil(scrollYProgress.get() * 100)}%
-						</span>
-					</div>
 				</div>
 			</CustomFrameRight>
 		</CustomFrame>

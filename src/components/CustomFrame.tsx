@@ -1,4 +1,5 @@
 import React from "react";
+import { isMobile } from "../utils/deviceInfo";
 
 interface CustomFrameProps {
 	horizontalWide?: number;
@@ -62,7 +63,7 @@ export default function CustomFrame({
 	};
 
 	return (
-		<div className="pointer-events-none z-10 fixed w-full min-h-dvh">
+		<div className={`pointer-events-none z-10 fixed ${isMobile() ? "w-screen" : "w-[calc(100vw-15px)]"} min-h-dvh`}>
 			{/* Top Frame */}
 			<div style={horizontalStyle} className={`pointer-events-auto absolute top-0 ${frameClassName}`}>
 				{topChild}
@@ -111,27 +112,31 @@ function FocusCrosshair({ horizontalWide, verticalWide, wide, focusedCrosshair }
 	return (
 		<div style={focusCrosshairStyle} className="pointer-events-none absolute">
 			<div
-				className={`absolute w-1/12 aspect-square border-t-2 border-l-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "top-12 left-12 border-stone-500 dark:border-zinc-300" : "top-4 left-4 border-gold/75"
-				}`}
-			/>
-			<div
-				className={`absolute w-1/12 aspect-square border-t-2 border-r-2 transition-all duration-300 ease-in-out ${
-					focusedCrosshair ? "top-12 right-14 border-stone-500 dark:border-zinc-300" : "top-4 right-6 border-gold/75"
-				}`}
-			/>
-			<div
-				className={`absolute w-1/12 aspect-square border-b-2 border-l-2 transition-all duration-300 ease-in-out ${
+				className={`absolute w-[calc(5vw+5vh)] aspect-square border-t-2 border-l-2 transition-all duration-300 ease-in-out ${
 					focusedCrosshair
-						? "bottom-12 left-12 border-stone-500 dark:border-zinc-300"
+						? `${isMobile() ? "top-7 left-7" : "top-12 left-12"} border-stone-500 dark:border-zinc-300`
+						: `top-4 left-4 border-gold/75`
+				}`}
+			/>
+			<div
+				className={`absolute w-[calc(5vw+5vh)] aspect-square border-t-2 border-r-2 transition-all duration-300 ease-in-out ${
+					focusedCrosshair
+						? `${isMobile() ? "top-7 right-7" : "top-12 right-15"} border-stone-500 dark:border-zinc-300`
+						: `top-4 ${isMobile() ? "right-4" : "right-8"} border-gold/75`
+				}`}
+			/>
+			<div
+				className={`absolute w-[calc(5vw+5vh)] aspect-square border-b-2 border-l-2 transition-all duration-300 ease-in-out ${
+					focusedCrosshair
+						? `${isMobile() ? "bottom-7 left-7" : "bottom-12 left-12"} border-stone-500 dark:border-zinc-300`
 						: "bottom-4 left-4 border-gold/75"
 				}`}
 			/>
 			<div
-				className={`absolute w-1/12 aspect-square border-b-2 border-r-2 transition-all duration-300 ease-in-out ${
+				className={`absolute w-[calc(5vw+5vh)] aspect-square border-b-2 border-r-2 transition-all duration-300 ease-in-out ${
 					focusedCrosshair
-						? "bottom-12 right-14 border-stone-500 dark:border-zinc-300"
-						: "bottom-4 right-6 border-gold/75"
+						? `${isMobile() ? "bottom-7 right-7" : "bottom-12 right-15"} border-stone-500 dark:border-zinc-300`
+						: `bottom-4 ${isMobile() ? "right-4" : "right-8"} border-gold/75`
 				}`}
 			/>
 		</div>
@@ -141,15 +146,12 @@ function FocusCrosshair({ horizontalWide, verticalWide, wide, focusedCrosshair }
 export function CustomFrameTop({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
-
 export function CustomFrameBottom({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
-
 export function CustomFrameLeft({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
-
 export function CustomFrameRight({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
