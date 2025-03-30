@@ -1,14 +1,41 @@
-import { useEffect, useState, useRef } from "react";
-import AlwaysDecryptedText from "../blocks/TextAnimations/DecryptedText/AlwaysDecryptedText";
+import type { Variants } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import useTheme from "../hooks/useTheme";
 
+const defaultVars = {
+	initial: {
+		background: "black",
+		backdropFilter: "blur(10px)"
+	},
+	animate: {
+		background: "black",
+		backdropFilter: "blur(10px)"
+	},
+	exit: {
+		background: "transparent",
+		backdropFilter: "blur(0px)"
+	}
+};
+
+interface CustomPreloadProps {
+	children:
+		| React.ReactElement<{ loadedPercentage: number }>
+		| ((props: { loadedPercentage: number }) => React.ReactNode);
+	deps: boolean[];
+	variants?: Variants;
+}
 /**
  * @param deps
  * Deps expected false when loading, and expected true when finished
+ * @param variants
+ * Expect initial, animate and exit properties, Variants type from framer-motion
+ *
+ * @example
+ * <CustomPreload deps={[loading, loading]} variants={vars}>
+ *   <>{({ loadedPercentage }: { loadedPercentage: number }) => <LoadingPage loadedPercentage={loadedPercentage} />}</>
+ * </CustomPreload>
  */
-export default function PreloadPage({ deps }: { deps: boolean[] }) {
-	const { theme } = useTheme();
+export default function CustomPreload({ children, deps, variants = defaultVars }: CustomPreloadProps) {
 	const [fontsLoaded, setFontsLoaded] = useState(false);
 	const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 	const imagesRef = useRef<HTMLImageElement[]>([]);
@@ -64,9 +91,8 @@ export default function PreloadPage({ deps }: { deps: boolean[] }) {
 		};
 	}, []);
 
-	const [loadedPercentage, setLoadedPercentage] = useState(0);
-
 	// Calculate percentage
+	const [loadedPercentage, setLoadedPercentage] = useState(0);
 	useEffect(() => {
 		const dependencies = [fontsLoaded, ...imagesLoaded, ...deps];
 
@@ -84,18 +110,10 @@ export default function PreloadPage({ deps }: { deps: boolean[] }) {
 			{loadedPercentage <= 99 && (
 				<motion.div
 					key="preloader"
-					initial={{
-						backgroundColor: theme === "light" ? "#e7e5e4" : "#18181b",
-						backdropFilter: "blur(10px)"
-					}}
-					animate={{
-						backgroundColor: theme === "light" ? "#e7e5e4" : "#18181b",
-						backdropFilter: "blur(10px)"
-					}}
-					exit={{
-						backgroundColor: "#0000001a",
-						backdropFilter: "blur(0px)"
-					}}
+					variants={variants}
+					initial="initial"
+					animate="animate"
+					exit="exit"
 					transition={{
 						delay: 0.3,
 						duration: 0.3,
@@ -103,17 +121,11 @@ export default function PreloadPage({ deps }: { deps: boolean[] }) {
 					}}
 					className="fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center"
 				>
-					<motion.div
-						initial={{ opacity: 1 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.3, ease: "easeInOut" }}
-						className="font-doto text-[8rem] leading-none text-gold flex flex-col"
-					>
-						<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 33} text="POR" />
-						<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 66} text="TFO" />
-						<AlwaysDecryptedText alwaysDecrypt={loadedPercentage <= 99} text="LIO" />
-					</motion.div>
+					{typeof children === "function"
+						? children({ loadedPercentage })
+						: React.isValidElement(children)
+						? React.cloneElement(children, { loadedPercentage })
+						: children}
 				</motion.div>
 			)}
 		</AnimatePresence>

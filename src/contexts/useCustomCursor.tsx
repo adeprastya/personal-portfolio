@@ -107,6 +107,23 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 	);
 }
 
+/**
+ * @example
+ * function MyCursor() {
+ * return <div className="size-10 rounded-full bg-red-500" />;
+ * }
+ *
+ * export default function MyComponent() {
+ * const cursorRef = useCustomCursor(MyCursor);
+ *
+ * return (
+ *   <div ref={cursorRef} className="p-4 bg-gray-200">
+ *     Hover over me to see custom cursor!
+ *   </div>
+ * );
+ * }
+ */
+
 // eslint-disable-next-line react-refresh/only-export-components
 export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 	customCursor: CustomCursorType,
@@ -155,21 +172,3 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 
 	return ref;
 }
-
-/**
- * ## USAGE
- *
- * function MyCursor() {
- * return <div className="size-28 rounded-full bg-red-500" />;
- * }
- *
- * export default function MyComponent() {
- * const cursorRef = useCustomCursor(MyCursor);
- *
- * return (
- *   <div ref={cursorRef} className="p-4 bg-gray-200">
- *     Hover over me to see custom cursor!
- *   </div>
- * );
- * }
- */
