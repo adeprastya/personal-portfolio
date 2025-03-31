@@ -41,7 +41,7 @@ export default function Home() {
 	}, [projectsVisibility]);
 
 	return (
-		<main className="absolute top-0 left-0 w-full h-dvh bg-stone-200 dark:bg-zinc-900">
+		<main className="absolute top-0 left-0 w-screen h-dvh bg-stone-200 dark:bg-zinc-900">
 			<Preload deps={[!isLoading]} />
 
 			<Frame project={data || []} onViewProject={onViewProject} />

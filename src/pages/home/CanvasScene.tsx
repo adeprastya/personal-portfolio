@@ -88,7 +88,7 @@ export default function CanvasScene({ projects, handleVisible }: CanvasSceneProp
 			<ambientLight intensity={0.5} />
 			<Environment preset="warehouse" />
 
-			<ScrollControls pages={projects.length} damping={0.3}>
+			<ScrollControls pages={projects.length} damping={0.3} style={{ scrollbarWidth: "none" }}>
 				<ProjectsTextObject projects={projects} handleVisible={handleVisible} />
 			</ScrollControls>
 		</Canvas>

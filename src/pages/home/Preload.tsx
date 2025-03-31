@@ -2,44 +2,42 @@ import CustomPreload from "../../components/CustomPreload";
 import AlwaysDecryptedText from "../../blocks/TextAnimations/DecryptedText/AlwaysDecryptedText";
 import { motion } from "framer-motion";
 
+const parentVars = {
+	initial: {
+		backdropFilter: "blur(6px)"
+	},
+	animate: {
+		backdropFilter: "blur(6px)"
+	},
+	exit: {
+		backdropFilter: "blur(0px)",
+		transition: { delay: 0.8, duration: 0.8, ease: "easeOut" }
+	}
+};
 export default function Preload({ deps }: { deps: boolean[] }) {
-	const vars = {
-		initial: {
-			backdropFilter: "blur(10px)"
-		},
-		animate: {
-			backdropFilter: "blur(10px)"
-		},
-		exit: {
-			backdropFilter: "blur(0px)",
-			transition: { delay: 0.8, duration: 0.8, ease: "easeIn" }
-		}
-	};
-
 	return (
-		<CustomPreload deps={deps} variants={vars}>
+		<CustomPreload deps={deps} variants={parentVars}>
 			{({ loadedPercentage }: { loadedPercentage: number }) => <LoadingPage loadedPercentage={loadedPercentage} />}
 		</CustomPreload>
 	);
 }
 
+const childVars = {
+	initial: {
+		height: "100dvh"
+	},
+	animate: {
+		height: "100dvh"
+	},
+	exit: {
+		height: "0",
+		transition: { delay: 0.2, duration: 0.8, ease: "easeOut" }
+	}
+};
 function LoadingPage({ loadedPercentage }: { loadedPercentage: number }) {
-	const vars = {
-		initial: {
-			height: "100dvh"
-		},
-		animate: {
-			height: "100dvh"
-		},
-		exit: {
-			height: "0",
-			transition: { delay: 0.2, duration: 0.8, ease: "easeOut" }
-		}
-	};
-
 	return (
 		<motion.div
-			variants={vars}
+			variants={childVars}
 			initial="initial"
 			animate="animate"
 			exit="exit"
