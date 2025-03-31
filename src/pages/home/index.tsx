@@ -27,10 +27,12 @@ export default function Home() {
 		queryKey: ["projects"],
 		queryFn: fetchProjects
 	});
+	const projects = data || [];
 
 	// Update project that is currently on screen
 	const [projectsVisibility, setProjectsVisibility] = useState([false]);
-	useEffect(() => setProjectsVisibility(Array(data?.length).fill(false)), [data]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(() => setProjectsVisibility(Array(projects.length).fill(false)), [data]);
 	const [onViewProject, setOnViewProject] = useState(NaN);
 	const handleVisible = (index: number, visible: boolean) =>
 		setProjectsVisibility((prev) => prev.map((v, i) => (i === index ? visible : v)));
@@ -44,9 +46,9 @@ export default function Home() {
 		<main className="absolute top-0 left-0 w-screen h-dvh bg-stone-200 dark:bg-zinc-900">
 			<Preload deps={[!isLoading]} />
 
-			<Frame project={data || []} onViewProject={onViewProject} />
+			<Frame project={projects} onViewProject={onViewProject} />
 
-			<CanvasScene projects={data || []} handleVisible={handleVisible} />
+			<CanvasScene projects={projects} handleVisible={handleVisible} />
 		</main>
 	);
 }
