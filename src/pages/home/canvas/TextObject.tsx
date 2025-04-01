@@ -71,11 +71,11 @@ function TextMesh({ project, index, handleVisible }: TextMeshProps) {
 	);
 }
 
-interface ProjectsTextGroupProps {
+interface TextObjectGroupProps {
 	projects: Project[];
 	handleVisible: (index: number, visible: boolean) => void;
 }
-export default function ProjectsTextGroup({ projects, handleVisible }: ProjectsTextGroupProps) {
+export default function TextObjectGroup({ projects, handleVisible }: TextObjectGroupProps) {
 	const groupRef = useRef<THREE.Group>(null!);
 	const scroll = useScroll();
 	const { height, width } = useThree((state) => state.viewport);

@@ -1,6 +1,7 @@
 import type { Project } from "../../../types/Project";
 import Lighting from "./Lighting";
-import ProjectsTextGroup from "./Text";
+import TextObject from "./TextObject";
+import MouseObject from "./MouseObject";
 import { Canvas } from "@react-three/fiber";
 import { ScrollControls } from "@react-three/drei";
 
@@ -14,7 +15,8 @@ export default function CanvasScene({ projects, handleVisible }: CanvasSceneProp
 			<Lighting />
 
 			<ScrollControls pages={projects.length} damping={0.3} style={{ scrollbarWidth: "none" }}>
-				<ProjectsTextGroup projects={projects} handleVisible={handleVisible} />
+				<MouseObject />
+				<TextObject projects={projects} handleVisible={handleVisible} />
 			</ScrollControls>
 		</Canvas>
 	);
