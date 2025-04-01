@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useScroll } from "@react-three/drei";
@@ -6,7 +6,7 @@ import { useScroll } from "@react-three/drei";
 export default function MouseObject() {
 	const meshRef = useRef<THREE.Mesh>(null!);
 	const scroll = useScroll();
-
+	// update mesh position and rotation
 	useFrame((state, delta) => {
 		// Mesh rotation
 		meshRef.current.rotation.x += delta * 0.1 + scroll.delta * 15;
@@ -18,18 +18,44 @@ export default function MouseObject() {
 		meshRef.current.position.set(targetX, targetY, 2.5);
 	});
 
+	// update material color
+	const materialRef = useRef<THREE.MeshPhysicalMaterial>(null!);
+	const themeRef = useRef(document.body.getAttribute("data-theme"));
+	// Using MutationObserver because RTF doesn't update when state change
+	useEffect(() => {
+		const observer = new MutationObserver(() => {
+			const newTheme = document.body.getAttribute("data-theme");
+			if (newTheme !== themeRef.current) {
+				themeRef.current = newTheme;
+				materialRef.current.color.set(document.body.getAttribute("data-theme") === "light" ? "#ffffff" : "#777777");
+				materialRef.current.specularColor.set(
+					document.body.getAttribute("data-theme") === "light" ? "#ffffff" : "#777777"
+				);
+			}
+		});
+		observer.observe(document.body, {
+			attributes: true,
+			attributeFilter: ["data-theme"]
+		});
+
+		return () => observer.disconnect();
+	}, []);
+
 	return (
 		<group ref={meshRef}>
-			<pointLight color="#ffffff" intensity={10} decay={0.2} />
+			<pointLight color="#ffffff" intensity={2} decay={0.2} />
 
 			<mesh>
 				<octahedronGeometry args={[0.5]} />
 				<meshPhysicalMaterial
-					color="#777777"
+					ref={materialRef}
+					color={document.body.getAttribute("data-theme") === "light" ? "#ffffff" : "#777777"}
 					roughness={0}
-					metalness={0.3}
+					metalness={0}
 					thickness={0.2}
-					transmission={1.2}
+					specularIntensity={2}
+					specularColor={document.body.getAttribute("data-theme") === "light" ? "#ffffff" : "#777777"}
+					transmission={0.95}
 					ior={2}
 				/>
 			</mesh>
