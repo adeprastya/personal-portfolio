@@ -1,7 +1,7 @@
 import type { MinProject, Project } from "../../types/Project";
 import Preload from "./Preload";
 import Frame from "./Frame";
-import CanvasScene from "./CanvasScene";
+import CanvasScene from "./canvas/CanvasScene";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 

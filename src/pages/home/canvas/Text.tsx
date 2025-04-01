@@ -1,9 +1,8 @@
-import type { Project } from "../../types/Project";
+import { Project } from "../../../types/Project";
 import { useRef } from "react";
 import * as THREE from "three";
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { Environment, Center, Text3D, ScrollControls, useScroll, useTexture, useIntersect } from "@react-three/drei";
-import { MovingSpotLight } from "./canvas/MovingLight";
+import { useThree, useFrame } from "@react-three/fiber";
+import { Center, Text3D, useScroll, useTexture, useIntersect } from "@react-three/drei";
 
 interface TextMeshProps {
 	project: Project;
@@ -63,6 +62,7 @@ function TextMesh({ project, index, handleVisible }: TextMeshProps) {
 					metalness={1}
 					roughnessMap={texture}
 					roughness={10}
+					fog={true}
 				/>
 
 				{project.title.split(" ").join("\n")}
@@ -75,7 +75,7 @@ interface ProjectsTextGroupProps {
 	projects: Project[];
 	handleVisible: (index: number, visible: boolean) => void;
 }
-function ProjectsTextGroup({ projects, handleVisible }: ProjectsTextGroupProps) {
+export default function ProjectsTextGroup({ projects, handleVisible }: ProjectsTextGroupProps) {
 	const groupRef = useRef<THREE.Group>(null!);
 	const scroll = useScroll();
 	const { height, width } = useThree((state) => state.viewport);
@@ -93,23 +93,5 @@ function ProjectsTextGroup({ projects, handleVisible }: ProjectsTextGroupProps) 
 				<TextMesh key={i} project={project} index={i} handleVisible={handleVisible} />
 			))}
 		</group>
-	);
-}
-
-interface CanvasSceneProps {
-	projects: Project[];
-	handleVisible: (index: number, visible: boolean) => void;
-}
-export default function CanvasScene({ projects, handleVisible }: CanvasSceneProps) {
-	return (
-		<Canvas camera={{ fov: 70, near: 0.1, far: 100, position: [0, 0, 5] }} style={{ background: "transparent" }}>
-			<Environment preset="warehouse" environmentIntensity={0.4} />
-			<MovingSpotLight />
-			<MovingSpotLight />
-
-			<ScrollControls pages={projects.length} damping={0.3} style={{ scrollbarWidth: "none" }}>
-				<ProjectsTextGroup projects={projects} handleVisible={handleVisible} />
-			</ScrollControls>
-		</Canvas>
 	);
 }
