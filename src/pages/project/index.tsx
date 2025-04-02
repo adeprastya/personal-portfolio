@@ -1,13 +1,13 @@
 import type { Project } from "../../types/Project";
 import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
 import BlurText from "../../blocks/TextAnimations/BlurText/BlurText";
-import Modal from "../../components/abstract/CustomModal";
+import CustomModal from "../../components/abstract/CustomModal";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import useTheme from "../../hooks/abstract/useTheme";
 import { useRouteTransition } from "../../contexts/useRouteTransition";
+import useTheme from "../../hooks/abstract/useTheme";
 
 const fetchProject = async (id: string): Promise<Project> => {
 	const data = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project/" + id)
@@ -26,7 +26,7 @@ export default function Project() {
 		queryFn: () => fetchProject(projectId as string)
 	});
 
-	// Image fullscreen modal
+	// Fullscreen image modal
 	const [activeModal, setActiveModal] = useState("");
 
 	const { handleTransition, handleLoading } = useRouteTransition();
@@ -64,18 +64,18 @@ export default function Project() {
 					<div className="absolute bottom-0 right-4 sm:right-8 translate-y-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-tr-3xl lg:hidden" />
 					<div className="absolute top-8 lg:top-12 right-0 translate-x-full size-8 bg-stone-300 dark:bg-zinc-800 after:absolute after:top-0 after:left-0 after:size-full after:bg-stone-200 dark:after:bg-zinc-900 after:rounded-tl-3xl" />
 
-					<h1 className="mb-4 font-doto font-bold text-[2.7rem] sm:text-[3.5rem] lg:text-[4.5rem] leading-none text-gold drop-shadow-custom">
-						<DecryptedText text={data?.title || ""} animateOn="view" sequential speed={80} />
+					<h1 className="mb-4 font-doto font-bold text-[2.7rem] sm:text-[3.5rem] lg:text-[4.5rem] leading-none drop-shadow-custom">
+						<DecryptedText text={data?.title || ""} animateOn="view" sequential speed={70} />
 					</h1>
-					<p className="font-doto font-bold text-[1.4rem] sm:text-[1.8rem] lg:text-[2.2rem] leading-tight text-gold drop-shadow-custom">
-						<DecryptedText text={data?.tagline || ""} animateOn="view" sequential speed={50} />
+					<p className="font-doto font-bold text-[1.4rem] sm:text-[1.8rem] lg:text-[2.2rem] leading-tight drop-shadow-custom">
+						<DecryptedText text={data?.tagline || ""} animateOn="view" sequential speed={40} />
 					</p>
 				</div>
 
 				{/* Description */}
 				<div className="col-span-full lg:col-span-1 py-6 lg:pt-16 px-6 sm:px-12 lg:pe-24 flex justify-center items-center tracking-wide text-xs sm:text-sm">
-					<p className="tracking-wide text-sm sm:text-base text-stone-600 dark:text-zinc-400">
-						<BlurText text={data?.description} delay={20} />
+					<p className="tracking-wider text-xs sm:text-sm text-stone-600 dark:text-zinc-400">
+						<BlurText text={data?.description} delay={25} />
 					</p>
 				</div>
 
@@ -87,7 +87,7 @@ export default function Project() {
 								data.technologies.map((tech, index) => (
 									<motion.p
 										key={index}
-										className="px-3 py-1 sm:px-5 rounded-full bg-stone-50 dark:bg-zinc-800 shadow-md text-stone-700 dark:text-zinc-100"
+										className="px-3 py-1 sm:px-5 rounded-full bg-stone-50 dark:bg-zinc-800 shadow-md tracking-wider text-xs sm:text-sm text-stone-600 dark:text-zinc-300"
 										custom={index}
 										variants={vars}
 										initial="hidden"
@@ -170,10 +170,10 @@ export default function Project() {
 					</div>
 				</div>
 
-				{/* Fullscreen Image */}
-				<Modal show={activeModal !== ""} closeHandler={() => setActiveModal("")}>
+				{/* Fullscreen Image Modal */}
+				<CustomModal show={activeModal !== ""} closeHandler={() => setActiveModal("")}>
 					<img src={activeModal} alt="Fullscreen Image" className="size-full object-contain" />
-				</Modal>
+				</CustomModal>
 			</main>
 		</>
 	);
@@ -181,14 +181,14 @@ export default function Project() {
 
 const vars = {
 	hidden: {
-		y: 3,
+		y: 5,
 		opacity: 0,
-		filter: "blur(10px)"
+		filter: "blur(6px)"
 	},
 	visible: (t: number) => ({
 		y: 0,
 		opacity: 1,
 		filter: "blur(0px)",
-		transition: { delay: t * 0.2, duration: 0.8, ease: "easeIn" }
+		transition: { delay: t * 0.6, duration: 0.8, ease: "linear" }
 	})
 };

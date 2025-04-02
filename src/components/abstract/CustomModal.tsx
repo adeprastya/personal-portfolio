@@ -22,22 +22,25 @@
  *   <p>Main content inside the modal</p>
  * </Modal>
  */
-export default function Modal({
+export default function CustomModal({
 	children,
 	show,
-	closeHandler
-}: {
-	children: React.ReactNode;
-	show: boolean;
-	closeHandler: (e: React.MouseEvent) => void;
-}) {
+	closeHandler,
+	className = "fixed inset-0 z-[700] p-4 sm:p-12 lg:p-20 flex items-center justify-center bg-black/75"
+}: CustomModalProps) {
 	if (!show) return null;
 	return (
-		<div onClick={closeHandler} className="fixed inset-0 z-[999] p-20 flex items-center justify-center bg-black/50">
-			<p className="pointer-events-none absolute top-4 right-8 text-sm tracking-wide text-neutral-100">
-				Click anywhere to close
+		<div onClick={closeHandler} className={className}>
+			<p className="pointer-events-none absolute top-4 right-8 text-xs sm:text-sm tracking-wide text-neutral-400">
+				Click to Close
 			</p>
 			{children}
 		</div>
 	);
+}
+interface CustomModalProps {
+	children: React.ReactNode;
+	show: boolean;
+	closeHandler: (e: React.MouseEvent) => void;
+	className?: string;
 }
