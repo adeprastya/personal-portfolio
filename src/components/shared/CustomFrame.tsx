@@ -1,5 +1,5 @@
 import React from "react";
-import { isMobile } from "../utils/deviceInfo";
+import { isMobile } from "../../utils/deviceInfo";
 
 interface CustomFrameProps {
 	horizontalWide?: number;

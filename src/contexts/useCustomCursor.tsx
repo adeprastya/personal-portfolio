@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { useMotionValue, motion, AnimatePresence, useSpring, MotionValue } from "framer-motion";
 import { debounce } from "../utils/rateLimiter";
@@ -11,7 +12,7 @@ type CustomCursorContextType = {
 	setWrapperClassName: (className: string) => void;
 	resetCustomCursor: () => void;
 };
-const CustomCursorContext = createContext<CustomCursorContextType | null>(null);
+const customCursorContext = createContext<CustomCursorContextType | null>(null);
 
 function CursorDefault() {
 	return <div className="size-28 sm:size-36 xl:size-44 rounded-full backdrop-invert" />;
@@ -19,6 +20,7 @@ function CursorDefault() {
 interface CustomCursorProviderProps extends React.PropsWithChildren {
 	DefaultCursor?: CustomCursorType;
 }
+
 export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }: CustomCursorProviderProps) {
 	const x = useMotionValue(0);
 	const y = useMotionValue(0);
@@ -68,7 +70,7 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 	}, [DefaultCursor]);
 
 	return (
-		<CustomCursorContext.Provider
+		<customCursorContext.Provider
 			value={{ x: springX, y: springY, setCustomCursor, setWrapperClassName, resetCustomCursor }}
 		>
 			{children}
@@ -103,34 +105,30 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 				transition={{ duration: 0.2, ease: "easeInOut" }}
 				className="fixed top-0 left-0 z-[999] pointer-events-none w-2 h-2 rounded-full backdrop-invert transform-gpu"
 			/>
-		</CustomCursorContext.Provider>
+		</customCursorContext.Provider>
 	);
 }
 
 /**
+ * Use a custom cursor and wrapper class name for a given element.
+ *
+ * @param customCursor A React component to render as the custom cursor.
+ * @param wrapperClassName A class name to apply to the custom cursor wrapper.
+ *
  * @example
- * function MyCursor() {
- * return <div className="size-10 rounded-full bg-red-500" />;
- * }
+ * import { useCustomCursor } from "./useCustomCursor";
  *
- * export default function MyComponent() {
- * const cursorRef = useCustomCursor(MyCursor);
- *
- * return (
- *   <div ref={cursorRef} className="p-4 bg-gray-200">
- *     Hover over me to see custom cursor!
- *   </div>
- * );
+ * function MyComponent() {
+ *   useCustomCursor(CustomCursor, "wrapper-class");
+ *   return <div>...</div>;
  * }
  */
-
-// eslint-disable-next-line react-refresh/only-export-components
 export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 	customCursor: CustomCursorType,
 	wrapperClassName: string = ""
 ) {
 	const ref = useRef<T>(null);
-	const ctx = useContext(CustomCursorContext);
+	const ctx = useContext(customCursorContext);
 	if (!ctx) throw new Error("useCustomCursor must be used within a CustomCursorProvider");
 	const { x, y, setCustomCursor, setWrapperClassName, resetCustomCursor } = ctx;
 	const isInsideRef = useRef(false);

@@ -1,4 +1,4 @@
-import type { Project } from "../../../types/Project";
+import type { MinProject } from "../../../types/Project";
 import Lighting from "./Lighting";
 import MouseObject from "./MouseObject";
 import BgMesh from "./BgMesh";
@@ -7,7 +7,7 @@ import { Canvas } from "@react-three/fiber";
 import { ScrollControls } from "@react-three/drei";
 
 interface CanvasSceneProps {
-	projects: Project[];
+	projects: MinProject[];
 	handleVisible: (index: number, visible: boolean) => void;
 }
 export default function CanvasScene({ projects, handleVisible }: CanvasSceneProps) {

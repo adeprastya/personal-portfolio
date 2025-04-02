@@ -1,10 +1,10 @@
-import { Project } from "../../../types/Project";
+import { MinProject } from "../../../types/Project";
 import TextMesh from "./TextMesh";
 import { useThree } from "@react-three/fiber";
 import { Center } from "@react-three/drei";
 
 interface PeojectMeshProps {
-	project: Project;
+	project: MinProject;
 	index: number;
 	handleVisible: (index: number, visible: boolean) => void;
 }

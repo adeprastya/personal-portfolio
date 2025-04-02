@@ -1,4 +1,4 @@
-import { Project } from "../../../types/Project";
+import { MinProject } from "../../../types/Project";
 import PeojectMesh from "./ProjectMesh";
 import { useRef } from "react";
 import * as THREE from "three";
@@ -6,7 +6,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useScroll } from "@react-three/drei";
 
 interface ProjectsGroupProps {
-	projects: Project[];
+	projects: MinProject[];
 	handleVisible: (index: number, visible: boolean) => void;
 }
 export default function ProjectsGroup({ projects, handleVisible }: ProjectsGroupProps) {

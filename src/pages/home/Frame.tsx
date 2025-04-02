@@ -1,11 +1,12 @@
-import type { Project } from "../../types/Project";
-import CustomFrame, { CustomFrameTop, CustomFrameBottom, CustomFrameRight } from "../../components/CustomFrame";
+import type { MinProject } from "../../types/Project";
+import CustomFrame, { CustomFrameTop, CustomFrameBottom, CustomFrameRight } from "../../components/shared/CustomFrame";
 import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
-import useTheme from "../../hooks/useTheme";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useRouteTransition } from "../../contexts/useRouteTransition";
+import useTheme from "../../hooks/abstract/useTheme";
 
-export default function Frame({ project, onViewProject }: { project: Project[]; onViewProject: number }) {
+export default function Frame({ project, onViewProject }: { project: MinProject[]; onViewProject: number }) {
 	const { theme, toggleTheme } = useTheme();
 
 	// Update frame width
@@ -60,9 +61,10 @@ export default function Frame({ project, onViewProject }: { project: Project[]; 
 		}
 	};
 
-	// Expand button navigation
+	const { handleTransition } = useRouteTransition();
 	const navigate = useNavigate();
-	const handleNavigate = () => navigate("/project/" + project?.[onViewProject].id);
+	// Expand button navigation
+	const handleNavigateProject = () => handleTransition(() => navigate("/project/" + project?.[onViewProject].id));
 
 	return (
 		<CustomFrame
@@ -117,7 +119,7 @@ export default function Frame({ project, onViewProject }: { project: Project[]; 
 					</span>
 					<button
 						type="button"
-						onClick={handleNavigate}
+						onClick={handleNavigateProject}
 						disabled={isNaN(onViewProject)}
 						className="border border-stone-400 dark:border-zinc-500 font-doto font-semibold dark:font-normal text-sm sm:text-base lg:text-lg text-center hover:bg-stone-400 dark:hover:bg-zinc-500 active:bg-stone-600 dark:active:bg-zinc-700 focus:outline-2 focus:outline-offset-2 focus:outline-stone-700 dark:focus:outline-zinc-300 transition-colors duration-500 ease-initial cursor-pointer disabled:hover:bg-transparent disabled:active:bg-transparent disabled:focus:outline-none disabled:cursor-default disabled:opacity-30"
 					>
