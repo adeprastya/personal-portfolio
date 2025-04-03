@@ -8,11 +8,11 @@ export default function MouseObject() {
 	const scroll = useScroll();
 	// update mesh position and rotation
 	useFrame((state, delta) => {
-		// Mesh rotation
-		meshRef.current.rotation.x += delta * 0.1 + scroll.delta * 15;
-		meshRef.current.rotation.y += delta * 0.1 + scroll.delta * 15;
+		// default rotation & scroll rotation
+		meshRef.current.rotation.x += delta * 0.1 + scroll.delta * 10;
+		meshRef.current.rotation.y += delta * 0.1 + scroll.delta * 10;
 
-		// Mesh following mouse
+		// following mouse position
 		const targetX = THREE.MathUtils.lerp(meshRef.current.position.x, state.pointer.x * 3, 0.01);
 		const targetY = THREE.MathUtils.lerp(meshRef.current.position.y, state.pointer.y * 2, 0.01);
 		meshRef.current.position.set(targetX, targetY, 2.5);
@@ -43,7 +43,7 @@ export default function MouseObject() {
 
 	return (
 		<group ref={meshRef}>
-			<pointLight color="#ffffff" intensity={2} decay={0.2} />
+			<pointLight color="#ffffff" intensity={5} decay={1} castShadow={false} />
 
 			<mesh>
 				<octahedronGeometry args={[0.5]} />

@@ -7,9 +7,11 @@ export function MovingSpotLight() {
 	const randomTime = [Math.random() + 0.5, Math.random() + 0.5];
 
 	useFrame(({ clock }) => {
-		lightRef.current.position.x = Math.sin(clock.elapsedTime * randomTime[0]) * 10;
-		lightRef.current.position.y = Math.sin(clock.elapsedTime * randomTime[1]) * 10;
-		lightRef.current.position.z = 10;
+		lightRef.current.position.set(
+			Math.sin(clock.elapsedTime * randomTime[0]) * 10,
+			Math.sin(clock.elapsedTime * randomTime[1]) * 10,
+			10
+		);
 	});
 
 	return (
@@ -17,10 +19,11 @@ export function MovingSpotLight() {
 			ref={lightRef}
 			position={[0, 0, 10]}
 			color={0xffffff}
-			intensity={100}
-			angle={0.4}
-			penumbra={1.5}
-			decay={2}
+			intensity={50}
+			angle={0.3}
+			penumbra={1}
+			decay={1.5}
+			castShadow={false}
 		/>
 	);
 }

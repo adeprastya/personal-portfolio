@@ -2,7 +2,7 @@ import type { MinProject } from "../../../types/Project";
 import Lighting from "./Lighting";
 import MouseObject from "./MouseObject";
 import BgMesh from "./BgMesh";
-import ProjectsGroup from "./ProjectsGroup";
+import TextsGroup from "./TextsGroup";
 import { Canvas } from "@react-three/fiber";
 import { ScrollControls } from "@react-three/drei";
 
@@ -12,7 +12,7 @@ interface CanvasSceneProps {
 }
 export default function CanvasScene({ projects, handleVisible }: CanvasSceneProps) {
 	return (
-		<Canvas camera={{ fov: 70, near: 0.1, far: 100, position: [0, 0, 5] }}>
+		<Canvas camera={{ fov: 70, near: 0.1, far: 10, position: [0, 0, 5] }}>
 			<Lighting />
 
 			<ScrollControls pages={projects.length} damping={0.25} style={{ scrollbarWidth: "none" }}>
@@ -20,7 +20,7 @@ export default function CanvasScene({ projects, handleVisible }: CanvasSceneProp
 
 				<BgMesh projectLength={projects.length} />
 
-				<ProjectsGroup projects={projects} handleVisible={handleVisible} />
+				<TextsGroup projects={projects} handleVisible={handleVisible} />
 			</ScrollControls>
 		</Canvas>
 	);
