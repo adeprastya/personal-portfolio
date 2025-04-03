@@ -16,11 +16,11 @@ const parentVars: Variants = {
 };
 const childVars: Variants = {
 	initial: {
-		height: "100dvh",
+		height: "100vh",
 		width: "0"
 	},
 	animate: {
-		height: "100dvh",
+		height: "100vh",
 		width: "100vw",
 		transition: { delay: 0.4, duration: 0.4, ease: "easeInOut" }
 	},
