@@ -6,6 +6,35 @@ import { useNavigate } from "react-router";
 import { useRouteTransition } from "../../contexts/useRouteTransition";
 import useTheme from "../../hooks/abstract/useTheme";
 
+const horizontalFrameWide = (screenBreakpoint: string) => {
+	switch (screenBreakpoint) {
+		case "xl":
+			return 80;
+		case "lg":
+			return 75;
+		case "md":
+			return 70;
+		case "sm":
+			return 65;
+		default:
+			return 60;
+	}
+};
+const verticalFrameWide = (screenBreakpoint: string) => {
+	switch (screenBreakpoint) {
+		case "xl":
+			return 60;
+		case "lg":
+			return 55;
+		case "md":
+			return 45;
+		case "sm":
+			return 40;
+		default:
+			return 35;
+	}
+};
+
 export default function Frame({ project, onViewProject }: { project: MinProject[]; onViewProject: number }) {
 	const { theme, toggleTheme } = useTheme();
 
@@ -32,34 +61,6 @@ export default function Frame({ project, onViewProject }: { project: MinProject[
 			window.removeEventListener("resize", handleResize);
 		};
 	});
-	const horizontalWide = () => {
-		switch (screenBreakpoint) {
-			case "xl":
-				return 80;
-			case "lg":
-				return 75;
-			case "md":
-				return 70;
-			case "sm":
-				return 65;
-			default:
-				return 60;
-		}
-	};
-	const verticalWide = () => {
-		switch (screenBreakpoint) {
-			case "xl":
-				return 60;
-			case "lg":
-				return 55;
-			case "md":
-				return 45;
-			case "sm":
-				return 40;
-			default:
-				return 35;
-		}
-	};
 
 	const { handleTransition } = useRouteTransition();
 	const navigate = useNavigate();
@@ -68,8 +69,8 @@ export default function Frame({ project, onViewProject }: { project: MinProject[
 
 	return (
 		<CustomFrame
-			horizontalWide={horizontalWide()}
-			verticalWide={verticalWide()}
+			horizontalWide={horizontalFrameWide(screenBreakpoint)}
+			verticalWide={verticalFrameWide(screenBreakpoint)}
 			focusCrosshair
 			frameClassName="bg-black/6 dark:bg-white/6 backdrop-blur"
 			focusedCrosshair={isNaN(onViewProject)}

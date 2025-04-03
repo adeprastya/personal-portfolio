@@ -22,17 +22,16 @@ function DefaultComponent({ isInitial }: TransitionComponentProps) {
 	);
 }
 
-interface RouteTransitionContext {
+type RouteTransitionContext = {
 	handleTransition: (navFn: () => void) => Promise<void>;
 	handleLoading: (isLoading: boolean) => void;
-}
+};
 const routeTransitionContext = createContext<RouteTransitionContext | null>(null);
 
 interface RouteTransitionProviderProps {
 	children: React.ReactNode;
 	component?: React.ComponentType<TransitionComponentProps>;
 }
-
 /**
  * @description
  * RouteTransitionProvider is a context provider that handles page

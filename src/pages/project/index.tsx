@@ -9,11 +9,16 @@ import { motion } from "framer-motion";
 import { useRouteTransition } from "../../contexts/useRouteTransition";
 import useTheme from "../../hooks/abstract/useTheme";
 
-const fetchProject = async (id: string): Promise<Project> => {
-	const data = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project/" + id)
-		.then((res) => res.json())
-		.then((data) => data.data);
-	return data;
+const fetchProject = async (id: string): Promise<Project | null> => {
+	try {
+		const response = await fetch(import.meta.env.VITE_BASE_API_URL + "/api/project/" + id);
+		if (!response.ok) throw new Error("Failed to fetch project");
+		const { data } = await response.json();
+		return data;
+	} catch (error) {
+		console.error("Failed to fetch projects:", error);
+		return null;
+	}
 };
 
 export default function Project() {

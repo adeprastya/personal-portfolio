@@ -38,3 +38,13 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(func: T, del
 
 	return throttledFunction as T;
 };
+
+// const throttle = (fn: (...args: unknown[]) => unknown, limit: number) => {
+//   let lastCall = 0;
+//   return (...args: unknown[]) => {
+//     const now = Date.now();
+//     if (now - lastCall < limit) return;
+//     lastCall = now;
+//     fn(...args);
+//   };
+// };

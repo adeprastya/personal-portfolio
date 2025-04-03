@@ -15,9 +15,15 @@ export default function ProjectsGroup({ projects, handleVisible }: ProjectsGroup
 	const scroll = useScroll();
 	const { height, width } = useThree((state) => state.viewport);
 	const spacing = height * 0.6 + width * 0.6;
+	const targetY = useRef(0);
+	const currentY = useRef(0);
 	useFrame(() => {
 		if (groupRef.current) {
-			groupRef.current.position.y = scroll.offset * spacing * (projects.length - 1);
+			targetY.current = scroll.offset * spacing * (projects.length - 1);
+
+			currentY.current = THREE.MathUtils.lerp(currentY.current, targetY.current, 0.05);
+
+			groupRef.current.position.y = currentY.current;
 		}
 	});
 

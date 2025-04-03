@@ -12,11 +12,12 @@ interface CanvasSceneProps {
 }
 export default function CanvasScene({ projects, handleVisible }: CanvasSceneProps) {
 	return (
-		<Canvas camera={{ fov: 70, near: 0.1, far: 100, position: [0, 0, 5] }} style={{ background: "transparent" }}>
+		<Canvas camera={{ fov: 70, near: 0.1, far: 100, position: [0, 0, 5] }}>
 			<Lighting />
 
-			<ScrollControls pages={projects.length} damping={0.3} style={{ scrollbarWidth: "none" }}>
+			<ScrollControls pages={projects.length} damping={0.25} style={{ scrollbarWidth: "none" }}>
 				<MouseObject />
+
 				<BgMesh projectLength={projects.length} />
 
 				<ProjectsGroup projects={projects} handleVisible={handleVisible} />

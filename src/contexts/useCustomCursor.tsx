@@ -1,10 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import type { ElementType } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from "react";
 import { useMotionValue, motion, AnimatePresence, useSpring, MotionValue } from "framer-motion";
 import { debounce } from "../utils/rateLimiter";
 import { isMobile } from "../utils/deviceInfo";
 
-type CustomCursorType = React.FC;
+type CustomCursorType = ElementType;
 type CustomCursorContextType = {
 	x: MotionValue<number>;
 	y: MotionValue<number>;
@@ -17,17 +18,19 @@ const customCursorContext = createContext<CustomCursorContextType | null>(null);
 function CursorDefault() {
 	return <div className="size-28 sm:size-36 xl:size-44 rounded-full backdrop-invert" />;
 }
-interface CustomCursorProviderProps extends React.PropsWithChildren {
-	DefaultCursor?: CustomCursorType;
-}
 
-export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }: CustomCursorProviderProps) {
+interface CustomCursorProviderProps {
+	children: React.ReactNode;
+	defaultCursor?: CustomCursorType;
+}
+export function CustomCursorProvider({ children, defaultCursor = CursorDefault }: CustomCursorProviderProps) {
+	// Update cursor position
 	const x = useMotionValue(0);
 	const y = useMotionValue(0);
 	const springX = useSpring(x, { damping: 10, stiffness: 50 });
 	const springY = useSpring(y, { damping: 10, stiffness: 50 });
-	// Update cursor position
 	useEffect(() => {
+		if (isMobile) return;
 		const handleMousePosition = (e: MouseEvent) => {
 			x.set(e.clientX);
 			y.set(e.clientY);
@@ -37,10 +40,10 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	// Update is cursor in window
 	const [inWindow, setInWindow] = useState<boolean>(false);
-	// Update inWindow state
 	useEffect(() => {
-		if (isMobile()) return;
+		if (isMobile) return;
 		const handleMouseMove = (e: MouseEvent) => {
 			setInWindow(
 				e.clientX > 20 && e.clientY > 20 && e.clientX < window.innerWidth - 20 && e.clientY < window.innerHeight - 20
@@ -50,34 +53,37 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 		return () => window.removeEventListener("mousemove", handleMouseMove);
 	}, []);
 
-	const [customCursor, setCustomCursor] = useState<CustomCursorType>(() => DefaultCursor);
-	const renderCustomCursor = useCallback(() => {
+	// Update custom cursor
+	const [customCursor, setCustomCursor] = useState<CustomCursorType>(defaultCursor);
+	const renderCustomCursor = useMemo(() => {
 		if (typeof customCursor === "function") {
 			return React.createElement(customCursor);
 		} else if (React.isValidElement(customCursor)) {
 			return customCursor;
 		} else {
-			throw new Error("Invalid custom cursor");
+			throw new Error("Invalid custom cursor component");
 		}
 	}, [customCursor]);
 
+	// Update cursor wrapper class name
 	const [wrapperClassName, setWrapperClassName] = useState<string>("");
-	const getWrapperClassName = useCallback(() => wrapperClassName, [wrapperClassName]);
 
-	const resetCustomCursor = useCallback(() => {
-		setCustomCursor(DefaultCursor);
+	// Reset cursor and wrapper classname
+	const resetCustomCursor = () => {
+		setCustomCursor(defaultCursor);
 		setWrapperClassName("");
-	}, [DefaultCursor]);
+	};
 
 	return (
 		<customCursorContext.Provider
 			value={{ x: springX, y: springY, setCustomCursor, setWrapperClassName, resetCustomCursor }}
 		>
 			{children}
+
 			{/* Custom Cursor */}
 			<AnimatePresence mode="wait">
 				<motion.div
-					key={customCursor?.toString() + getWrapperClassName()}
+					key={customCursor?.toString() + wrapperClassName}
 					style={{ translateX: springX, translateY: springY }}
 					variants={{
 						hidden: { x: "-50%", y: "-50%", scale: 0 },
@@ -87,9 +93,9 @@ export function CustomCursorProvider({ children, DefaultCursor = CursorDefault }
 					animate={inWindow ? "visible" : "hidden"}
 					exit="hidden"
 					transition={{ duration: 0.2, ease: "easeInOut" }}
-					className={`fixed top-0 left-0 pointer-events-none transform-gpu ${getWrapperClassName()}`}
+					className={`fixed top-0 left-0 pointer-events-none transform-gpu ${wrapperClassName}`}
 				>
-					{renderCustomCursor() as React.ReactElement}
+					{renderCustomCursor}
 				</motion.div>
 			</AnimatePresence>
 
@@ -129,7 +135,7 @@ export function useCustomCursor<T extends HTMLElement = HTMLDivElement>(
 ) {
 	const ref = useRef<T>(null);
 	const ctx = useContext(customCursorContext);
-	if (!ctx) throw new Error("useCustomCursor must be used within a CustomCursorProvider");
+	if (!ctx) throw new Error("__useCustomCursor__ must be used within a CustomCursorProvider");
 	const { x, y, setCustomCursor, setWrapperClassName, resetCustomCursor } = ctx;
 	const isInsideRef = useRef(false);
 
