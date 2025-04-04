@@ -1,6 +1,6 @@
-/*
-	Installed from https://reactbits.dev/ts/tailwind/
-*/
+// /*
+// 	Installed from https://reactbits.dev/ts/tailwind/
+// */
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
@@ -19,7 +19,6 @@ interface DecryptedTextProps {
 	animateOn?: "view" | "hover";
 	[key: string]: unknown;
 }
-
 export default function DecryptedText({
 	text,
 	speed = 50,

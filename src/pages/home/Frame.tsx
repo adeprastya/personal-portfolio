@@ -84,6 +84,9 @@ const Frame = React.memo(({ project, onViewProject }: { project: MinProject[]; o
 								.toString()
 								.padStart(2, "0")}
 							animateOn="view"
+							sequential
+							maxIterations={10}
+							speed={100}
 						/>
 					</span>
 					<h1 className="basis-1/3 font-doto font-semibold dark:font-normal text-sm sm:text-base lg:text-lg text-center">
@@ -94,8 +97,9 @@ const Frame = React.memo(({ project, onViewProject }: { project: MinProject[]; o
 							key={onViewProject}
 							text={Array.isArray(project) ? (!isNaN(onViewProject) ? project[onViewProject].title : "Null") : "Null"}
 							animateOn="view"
-							speed={75}
 							sequential
+							maxIterations={1}
+							speed={100}
 						/>
 					</span>
 				</div>
@@ -114,8 +118,9 @@ const Frame = React.memo(({ project, onViewProject }: { project: MinProject[]; o
 									: "Undefined"
 							}
 							animateOn="view"
-							speed={100}
 							sequential
+							maxIterations={1}
+							speed={100}
 						/>
 					</span>
 					<button
@@ -124,7 +129,14 @@ const Frame = React.memo(({ project, onViewProject }: { project: MinProject[]; o
 						disabled={isNaN(onViewProject)}
 						className="border border-stone-400 dark:border-zinc-500 font-doto font-semibold dark:font-normal text-sm sm:text-base lg:text-lg text-center hover:bg-stone-400 dark:hover:bg-zinc-500 active:bg-stone-600 dark:active:bg-zinc-700 focus:outline-2 focus:outline-offset-2 focus:outline-stone-700 dark:focus:outline-zinc-300 transition-colors duration-500 ease-initial cursor-pointer disabled:hover:bg-transparent disabled:active:bg-transparent disabled:focus:outline-none disabled:cursor-default disabled:opacity-30"
 					>
-						<DecryptedText text={"// Expand"} sequential parentClassName="px-3 py-1" />
+						<DecryptedText
+							text={"// Expand"}
+							animateOn="hover"
+							parentClassName="px-3 py-1"
+							sequential
+							maxIterations={1}
+							speed={100}
+						/>
 					</button>
 				</div>
 			</CustomFrameBottom>
