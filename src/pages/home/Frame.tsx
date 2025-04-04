@@ -1,7 +1,7 @@
 import type { MinProject } from "../../types/Project";
 import CustomFrame, { CustomFrameTop, CustomFrameBottom, CustomFrameRight } from "../../components/shared/CustomFrame";
 import DecryptedText from "../../blocks/TextAnimations/DecryptedText/DecryptedText";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useRouteTransition } from "../../contexts/useRouteTransition";
 import useTheme from "../../hooks/abstract/useTheme";
@@ -35,10 +35,10 @@ const verticalFrameWide = (screenBreakpoint: string) => {
 	}
 };
 
-export default function Frame({ project, onViewProject }: { project: MinProject[]; onViewProject: number }) {
+const Frame = React.memo(({ project, onViewProject }: { project: MinProject[]; onViewProject: number }) => {
 	const { theme, toggleTheme } = useTheme();
 
-	// Update frame width
+	// Update frame width based on screen size
 	const [screenBreakpoint, setScreenBreakpoint] = useState("xl");
 	useEffect(() => {
 		const handleResize = () => {
@@ -142,4 +142,5 @@ export default function Frame({ project, onViewProject }: { project: MinProject[
 			</CustomFrameRight>
 		</CustomFrame>
 	);
-}
+});
+export default Frame;

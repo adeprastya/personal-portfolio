@@ -2,6 +2,9 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 
+/**
+ * @description A moving spotlight that moves in a circular pattern.
+ */
 export function MovingSpotLight() {
 	const lightRef = useRef<THREE.SpotLight>(null!);
 	const randomTime = [Math.random() + 0.5, Math.random() + 0.5];

@@ -1,7 +1,7 @@
 import type { MinProject } from "../../types/Project";
 import Frame from "./Frame";
 import CanvasScene from "./canvas/CanvasScene";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouteTransition } from "../../contexts/useRouteTransition";
 
@@ -19,10 +19,12 @@ const fetchProjects = async (): Promise<MinProject[]> => {
 
 export default function Home() {
 	// Fetch projects
-	const { data: projects = [], isLoading } = useQuery<MinProject[]>({
+	const { data, isLoading } = useQuery<MinProject[]>({
 		queryKey: ["projects"],
 		queryFn: fetchProjects
 	});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const projects = useMemo(() => (data ? data : []), [data?.length]);
 
 	// Update preload animation
 	const { handleLoading } = useRouteTransition();
@@ -39,8 +41,11 @@ export default function Home() {
 		else return projectsVisibility.indexOf(true);
 	}, [projectsVisibility]);
 
-	const handleVisible = (index: number, visible: boolean) =>
-		setProjectsVisibility((prev) => prev.map((v, i) => (i === index ? visible : v)));
+	const handleVisible = useCallback(
+		(index: number, visible: boolean) =>
+			setProjectsVisibility((prev) => prev.map((v, i) => (i === index ? visible : v))),
+		[]
+	);
 
 	return (
 		<main className="absolute top-0 left-0 w-screen h-dvh bg-stone-200 dark:bg-zinc-900">
